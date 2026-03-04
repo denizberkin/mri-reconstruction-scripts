@@ -96,6 +96,36 @@ python experiments/plot_reconstruction_comparison.py \
     --file "$(head -n 1 selected_samples.txt)"
 ```
 
+# Qualitative figures (zero-filled vs U-Net) for all files in selected subset
+```bash
+python experiments/plot_zero_filled_unet_qualitative.py \
+    --target_path data/multicoil_val \
+    --target_key reconstruction_rss \
+    --zero_filled_path results/zero_filled_subset \
+    --unet_path results/unet_subset/reconstructions \
+    --file_list selected_samples.txt \
+    --output_dir results/figures_zf_unet
+```
+
+# Qualitative figures (zero-filled vs U-Net) for a single sample
+```bash
+python experiments/plot_zero_filled_unet_qualitative.py \
+    --target_path data/multicoil_val \
+    --target_key reconstruction_rss \
+    --zero_filled_path results/zero_filled_subset \
+    --unet_path results/unet_subset/reconstructions \
+    --file "$(head -n 1 selected_samples.txt)" \
+    --output_dir results/figures_zf_unet_single
+```
+
+# Output folders produced by the script
+# - results/figures_zf_unet/comparison
+# - results/figures_zf_unet/target
+# - results/figures_zf_unet/zero_filled
+# - results/figures_zf_unet/unet
+# - results/figures_zf_unet/error_zero_filled
+# - results/figures_zf_unet/error_unet
+
 # Full-dataset evaluation with no saved reconstructions (zero-filled + U-Net only)
 ```bash
 python experiments/evaluate_all.py \
