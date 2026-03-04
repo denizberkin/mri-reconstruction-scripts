@@ -27,6 +27,28 @@ def get_slice(volume: np.ndarray, slice_idx: int) -> np.ndarray:
     return volume[idx]
 
 
+def to_2d_image(img: np.ndarray) -> np.ndarray:
+    arr = np.asarray(img)
+    if np.iscomplexobj(arr):
+        arr = np.abs(arr)
+
+    arr = np.squeeze(arr)
+    if arr.ndim == 2:
+        return arr
+
+    if arr.ndim == 3:
+        if arr.shape[0] <= 8 and arr.shape[1] > 8 and arr.shape[2] > 8:
+            return np.linalg.norm(arr, axis=0)
+        if arr.shape[-1] <= 8 and arr.shape[0] > 8 and arr.shape[1] > 8:
+            return np.linalg.norm(arr, axis=-1)
+        return arr[0]
+
+    while arr.ndim > 2:
+        arr = arr[0]
+
+    return arr
+
+
 def expand_file_list(items) -> List[str]:
     if not items:
         return []
@@ -152,9 +174,9 @@ def main() -> None:
         with h5py.File(unet_file, "r") as hf:
             unet_vol = hf["reconstruction"][()]
 
-        target = get_slice(target_vol, args.slice_index)
-        zf = get_slice(zf_vol, args.slice_index)
-        unet = get_slice(unet_vol, args.slice_index)
+        target = to_2d_image(get_slice(target_vol, args.slice_index))
+        zf = to_2d_image(get_slice(zf_vol, args.slice_index))
+        unet = to_2d_image(get_slice(unet_vol, args.slice_index))
 
         target_n = normalize(target)
         zf_n = normalize(zf)
